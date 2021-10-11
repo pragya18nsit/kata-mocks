@@ -3,9 +3,15 @@ import { Destination } from "./destination";
 import { Source } from "./source";
 
 class SourceStub implements Source{
+  characters:string[] = ["a", "b", "c", "d", "e", "f","\n"];
+  index:number = 0;
   getCharacter(): string {
-    return "a";
+    const character = this.characters[this.index];
+    this.index=this.index+1;
+    return character;
   }
+
+
 }
 
 class DestinationFake implements Destination{
@@ -22,7 +28,17 @@ describe("Test of character copier", function() {
     const copier = new Copier(source, destination);
 
     copier.copy();
-
     expect(destination.characters).toContainEqual("a");
+  });
+
+  it(" should read characters from the source and copy them to the destination until the source returns a newline.", function(){
+    const source = new SourceStub();
+
+    const destination = new DestinationFake();
+    const copier = new Copier(source, destination);
+
+    copier.copy();
+
+    expect(destination.characters).toEqual(["a", "b", "c", "d", "e", "f"]);
   });
 });
